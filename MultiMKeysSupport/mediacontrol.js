@@ -8,8 +8,8 @@ function Next(){
     catch(err) {
         n = document.getElementsByClassName('ytp-next-button');
         if (n.length) {
-            next = n[0];
-            n[0].click();
+            next = n[n.length-1];
+            next.click();
         }
     }
 }
@@ -20,8 +20,8 @@ function Previous(){
     catch(err){
         p = document.getElementsByClassName('ytp-prev-button');
         if (p.length){
-            prev = p[0];
-            p[0].click();
+            prev = p[p.length-1];
+            prev.click();
         }
     }
 }
@@ -32,8 +32,8 @@ function PausePlay(){
     catch (err) {
         p = document.getElementsByClassName('ytp-play-button');
         if (p.length) {
-            pause = p[0];
-            p[0].click();
+            pause = p[p.length-1];
+            pause.click();
         }
     }
 }
