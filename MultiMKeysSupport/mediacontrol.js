@@ -6,12 +6,10 @@ function Next(){
         next.click();
     }
     catch(err) {
-        a = document.getElementsByTagName('a');
-        for (i = 0; i < a.length; i++){
-            if (a[i].getAttribute('title') == 'Next') {
-                var next = a[i];
-                a[i].click();
-            }
+        n = document.getElementsByClassName('ytp-next-button');
+        if (n.length) {
+            next = n[0];
+            n[0].click();
         }
     }
 }
@@ -20,12 +18,10 @@ function Previous(){
         prev.click();
     }
     catch(err){
-        a = document.getElementsByTagName('a');
-        for (i = 0; i < a.length; i++){
-            if (a[i].getAttribute('title') == 'Replay' || a[i].getAttribute('title') == 'Previous') {
-                var prev = a[i];
-                a[i].click();
-            }
+        p = document.getElementsByClassName('ytp-prev-button');
+        if (p.length){
+            prev = p[0];
+            p[0].click();
         }
     }
 }
@@ -34,12 +30,10 @@ function PausePlay(){
         pause.click();
     }
     catch (err) {
-        b = document.getElementsByTagName('button');
-        for (i = 0; i < b.length; i++){
-            if (b[i].getAttribute('aria-label') == 'Play' || b[i].getAttribute('aria-label') == 'Pause') {
-                var pause = b[i];
-                b[i].click();
-            }
+        p = document.getElementsByClassName('ytp-play-button');
+        if (p.length) {
+            pause = p[0];
+            p[0].click();
         }
     }
 }

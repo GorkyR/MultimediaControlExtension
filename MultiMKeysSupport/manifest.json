@@ -3,7 +3,7 @@
 
 	"name": "MultimediaKeysSupport",
 	"description": "Adds Multimedia Keys support for Youtube",
-	"version": "0.4",
+	"version": "0.9",
 	"author": "GorkyR",
 	"background": {
 		"page": "background.html"
