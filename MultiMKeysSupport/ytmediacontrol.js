@@ -39,8 +39,7 @@ function PausePlay(state){
         if (state && (contains(localPlay, pause.getAttribute('aria-label')) || contains(localPlay, pause.getAttribute('title')) ) ){
             pause.click();
         }
-        else if (state == 0 && localPause.indexOf(pause.getAttribute('aria-label')) != -1)
-        {
+        else if (state == 0 && contains(localPause, pause.getAttribute('aria-label')) ){
             pause.click();
         }
     }

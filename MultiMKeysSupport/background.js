@@ -2,9 +2,13 @@ var ytports = [];
 var scports = [];
 
 var playing = true;
-var SCActive = false;
 
-function excertcontrol(command, port){
+function ControlHandler(command){ 
+    if (scports.length) excertSCcontrol(command);
+    else excertYTcontrol(command);
+}
+
+function excertYTcontrol(command){
     if (command == "playpause") {
         for (i = 0; i < ytports.length; i++){
             try {
@@ -19,8 +23,7 @@ function excertcontrol(command, port){
                 ytports.splice(i, 1);
             }
         }
-        if (playing){ playing = false; }
-        else{ playing = true; }
+        playing = !playing;
     }
     if (command == "prev") {
         for (i = 0; i < ytports.length; i++){
@@ -44,13 +47,49 @@ function excertcontrol(command, port){
     }
 }
 
-chrome.commands.onCommand.addListener(excertcontrol);
+function excertSCcontrol(command){
+    if (command == "playpause") {
+        for (i = 0; i < scports.length; i++){
+            try {
+                if (playing){
+                    scports[i].postMessage({"command": "pause"});
+                }
+                else{
+                    scports[i].postMessage({"command": "play"});
+                }
+            }
+            catch(err) {
+                scports.splice(i, 1);
+            }
+        }
+        playing = !playing;
+    }
+    if (command == "prev") {
+        for (i = 0; i < scports.length; i++){
+            try{
+                scports[i].postMessage({"command": "prev"});
+            }
+            catch(err) {
+                scports.splice(i, 1);
+            }
+        }
+    }
+    if (command == "next") {
+        for (i = 0; i < scports.length; i++){
+            try{
+                scports[i].postMessage({"command": "next"});
+            }
+            catch(err) {
+                scports.splice(i, 1);
+            }
+        }
+    }
+}
+
+chrome.commands.onCommand.addListener(ControlHandler);
 chrome.runtime.onConnect.addListener(function(port){
-                                        console.assert(port.name.indexOf("control") !== -1);
+                                        console.assert(port.name.indexOf("control") !== -1, "Out of control!!!");
                                         if (port.name == "ytcontrol") ytports.push(port);
-                                        else if (port.name == "sccontrol") {
-                                            scports.push(port);
-                                            SCActive = true;
-                                        }
+                                        else if (port.name == "sccontrol") scports.push(port);
                                     }
 );
