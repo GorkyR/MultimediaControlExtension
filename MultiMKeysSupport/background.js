@@ -4,11 +4,14 @@ var scports = [];
 var playing = true;
 
 function ControlHandler(command){ 
-    if (scports.length) excertSCcontrol(command);
-    else excertYTcontrol(command);
+    if (scports.length){
+        excertSCcontrol(command,playing);
+        excertYTcontrol("playpause", true);
+    }
+    else excertYTcontrol(command, playing);
 }
 
-function excertYTcontrol(command){
+function excertYTcontrol(command, state){
     if (command == "playpause") {
         for (i = 0; i < ytports.length; i++){
             try {
@@ -47,7 +50,7 @@ function excertYTcontrol(command){
     }
 }
 
-function excertSCcontrol(command){
+function excertSCcontrol(command, state){
     if (command == "playpause") {
         for (i = 0; i < scports.length; i++){
             try {
