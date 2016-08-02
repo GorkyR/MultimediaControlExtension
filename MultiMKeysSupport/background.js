@@ -5,7 +5,7 @@ var playing = true;
 
 function ControlHandler(command){ 
     if (scports.length){
-        excertSCcontrol(command,playing);
+        excertSCcontrol(command);
         excertYTcontrol("playpause", true);
     }
     else excertYTcontrol(command, playing);
@@ -15,7 +15,7 @@ function excertYTcontrol(command, state){
     if (command == "playpause") {
         for (i = 0; i < ytports.length; i++){
             try {
-                if (playing){
+                if (state){
                     ytports[i].postMessage({"command": "pause"});
                 }
                 else{
@@ -26,7 +26,7 @@ function excertYTcontrol(command, state){
                 ytports.splice(i, 1);
             }
         }
-        playing = !playing;
+        playing = !state;
     }
     if (command == "prev") {
         for (i = 0; i < ytports.length; i++){
@@ -50,7 +50,7 @@ function excertYTcontrol(command, state){
     }
 }
 
-function excertSCcontrol(command, state){
+function excertSCcontrol(command){
     if (command == "playpause") {
         for (i = 0; i < scports.length; i++){
             try {
