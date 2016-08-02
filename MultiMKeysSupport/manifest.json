@@ -30,6 +30,9 @@
 	},
 	"content_scripts": [{
 		"matches": ["https://www.youtube.com/*"],
-		"js": ["mediacontrol.js"]
+		"js": ["ytmediacontrol.js"]
+	},{
+		"matches": ["https://soundcloud.com/*"],
+		"js": ["scmediacontrol.js"]
 	}]
 }

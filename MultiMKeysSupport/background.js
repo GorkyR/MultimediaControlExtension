@@ -1,42 +1,44 @@
-var ports = [];
+var ytports = [];
+var scports = [];
 
 var playing = true;
+var SCActive = false;
 
 function excertcontrol(command, port){
     if (command == "playpause") {
-        for (i = 0; i < ports.length; i++){
+        for (i = 0; i < ytports.length; i++){
             try {
                 if (playing){
-                    ports[i].postMessage({"command": "pause"});
+                    ytports[i].postMessage({"command": "pause"});
                 }
                 else{
-                    ports[i].postMessage({"command": "play"});
+                    ytports[i].postMessage({"command": "play"});
                 }
             }
             catch(err) {
-                ports.splice(i, 1);
+                ytports.splice(i, 1);
             }
         }
         if (playing){ playing = false; }
         else{ playing = true; }
     }
     if (command == "prev") {
-        for (i = 0; i < ports.length; i++){
+        for (i = 0; i < ytports.length; i++){
             try{
-                ports[i].postMessage({"command": "prev"});
+                ytports[i].postMessage({"command": "prev"});
             }
             catch(err) {
-                ports.splice(i, 1);
+                ytports.splice(i, 1);
             }
         }
     }
     if (command == "next") {
-        for (i = 0; i < ports.length; i++){
+        for (i = 0; i < ytports.length; i++){
             try{
-                ports[i].postMessage({"command": "next"});
+                ytports[i].postMessage({"command": "next"});
             }
             catch(err) {
-                ports.splice(i, 1);
+                ytports.splice(i, 1);
             }
         }
     }
@@ -44,7 +46,11 @@ function excertcontrol(command, port){
 
 chrome.commands.onCommand.addListener(excertcontrol);
 chrome.runtime.onConnect.addListener(function(port){
-                                        console.assert(port.name == "control");
-                                        ports.push(port);
+                                        console.assert(port.name.indexOf("control") !== -1);
+                                        if (port.name == "ytcontrol") ytports.push(port);
+                                        else if (port.name == "sccontrol") {
+                                            scports.push(port);
+                                            SCActive = true;
+                                        }
                                     }
 );
