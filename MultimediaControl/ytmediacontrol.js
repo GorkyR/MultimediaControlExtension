@@ -1,17 +1,6 @@
 var next = null,
     prev = null,
-    pause = null;
-
-var localPlaying = ['Pause'];
-
-function isPlaying(){
-    return localPlaying.indexOf(pause.getAttribute('aria-label')) !== -1;
-    /* 
-    * When paused/stopped, YT's play/pause button has attribute {aria-label="Play"}  or {title="Replay"}
-    * When playing, YT's play/pause button has attribute {aria-label="Pause"} 
-    * That's the only way I found to check if video is playing.
-    */
-}
+    video = null;
 
 function Next(){
     try { next.click(); }
@@ -23,6 +12,7 @@ function Next(){
         }
     }
 }
+
 function Previous(){
     try { prev.click(); }
     catch(err){ // prev probably hasn't been defined as a button.
@@ -35,11 +25,14 @@ function Previous(){
 }
 
 function PausePlay(state){
-    try { if ( (state && !isPlaying()) || (!state && isPlaying()) )   pause.click(); } //If "play" command and it isn't playing: play. And viceversa.
-    catch (err) { // pause probably hasn't been defined as a button.
-        p = document.getElementsByClassName('ytp-play-button');
-        if (p.length) {
-            pause = p[p.length-1];
+    try { 
+        if (state && video.paused)          video.play();  // If "play" command and it isn't playing: play.
+        else if (!state && !video.paused)   video.pause(); // And viceversa.
+    }
+    catch (err) { // video probably hasn't been defined as a video element.
+        v = document.getElementsByTagName('video');
+        if (v.length) {
+            video = v[v.length-1];
             PausePlay(state);
         }
     }

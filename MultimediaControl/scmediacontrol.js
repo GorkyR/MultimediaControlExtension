@@ -23,6 +23,7 @@ function Next(){
         }
     }
 }
+
 function Previous(){
     try { prev.click(); }
     catch(err){ // prev probably hasn't been defined as a button.
