@@ -5,9 +5,11 @@
 	"description": "Adds Multimedia Keys support for Youtube and Soundcloud",
 	"version": "0.9.75",
 	"author": "GorkyR",
+
 	"background": {
 		"page": "background.html"
 	},
+
 	"commands":{
 		"playpause":{
 			"suggested_key":{
@@ -15,12 +17,14 @@
 			},
 			"description": "Pauses/Plays"
 		},
+
 		"next":{
 			"suggested_key":{
 				"default": "MediaNextTrack"
 			},
 			"description": "Plays Next"
 		},
+
 		"prev":{
 			"suggested_key":{
 				"default": "MediaPrevTrack"
@@ -28,6 +32,7 @@
 			"description": "Replays/Plays previous"
 		}
 	},
+	
 	"content_scripts": [{
 		"matches": ["https://www.youtube.com/*"],
 		"js": ["ytmediacontrol.js"]

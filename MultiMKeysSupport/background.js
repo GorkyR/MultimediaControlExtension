@@ -1,98 +1,54 @@
-var ytports = [];
-var scports = [];
+var ytPorts = [],
+    scPorts = [];
 
 var playing = true;
 
 function ControlHandler(command){ 
-    if (scports.length){
-        excertSCcontrol(command);
-        excertYTcontrol("playpause", true);
+    if (scPorts.length){                            //If there are soudncloud ports open, pause YT and control only SC.  
+        ExcertControl(command, scPorts);
+        ExcertControl("playpause", ytPorts, true);
     }
-    else excertYTcontrol(command, playing);
+    else ExcertControl(command, ytPorts);
 }
 
-function excertYTcontrol(command, state){
-    if (command == "playpause") {
-        for (i = 0; i < ytports.length; i++){
-            try {
-                if (state){
-                    ytports[i].postMessage({"command": "pause"});
+function ExcertControl(command, ports, state=playing){
+    switch (command){
+        case "playpause":
+            for (i = 0; i < ports.length; i++){                             //Send command to every port in ports[].
+                try {
+                    if (state)  ports[i].postMessage({"command": "pause"}); //If playing: pause.
+                    else        ports[i].postMessage({"command": "play"});
                 }
-                else{
-                    ytports[i].postMessage({"command": "play"});
-                }
+                catch(err) {    ports.splice(i, 1); }                       //If port is disconnected (tab closed) remove port from ports[].
             }
-            catch(err) {
-                ytports.splice(i, 1);
+            playing = !state;                                               //Toogle "playing" state.
+            break;
+
+        case "next":
+            for (i = 0; i < ports.length; i++){
+                try {           ports[i].postMessage({"command": "next"}); }
+                catch(err) {    ports.splice(i, 1); }
             }
-        }
-        playing = !state;
-    }
-    if (command == "prev") {
-        for (i = 0; i < ytports.length; i++){
-            try{
-                ytports[i].postMessage({"command": "prev"});
+            playing = true;                                                 //Is now playing.
+            break;
+            
+        case "prev":
+            for (i = 0; i < ports.length; i++){
+                try {           ports[i].postMessage({"command": "prev"}); } 
+                catch(err) {    ports.splice(i, 1); }
             }
-            catch(err) {
-                ytports.splice(i, 1);
-            }
-        }
-    }
-    if (command == "next") {
-        for (i = 0; i < ytports.length; i++){
-            try{
-                ytports[i].postMessage({"command": "next"});
-            }
-            catch(err) {
-                ytports.splice(i, 1);
-            }
-        }
+            playing = true;                                                 
+            break;
     }
 }
 
-function excertSCcontrol(command){
-    if (command == "playpause") {
-        for (i = 0; i < scports.length; i++){
-            try {
-                if (playing){
-                    scports[i].postMessage({"command": "pause"});
-                }
-                else{
-                    scports[i].postMessage({"command": "play"});
-                }
-            }
-            catch(err) {
-                scports.splice(i, 1);
-            }
-        }
-        playing = !playing;
-    }
-    if (command == "prev") {
-        for (i = 0; i < scports.length; i++){
-            try{
-                scports[i].postMessage({"command": "prev"});
-            }
-            catch(err) {
-                scports.splice(i, 1);
-            }
+chrome.commands.onCommand.addListener( ControlHandler );
+chrome.runtime.onConnect.addListener(
+    function(port){
+        console.assert(port.name.indexOf("control") !== -1, "Out of control!!!"); // :3
+        switch (port.name){
+            case "ytcontrol": ytPorts.push(port); break;
+            case "sccontrol": scPorts.push(port); break;
         }
     }
-    if (command == "next") {
-        for (i = 0; i < scports.length; i++){
-            try{
-                scports[i].postMessage({"command": "next"});
-            }
-            catch(err) {
-                scports.splice(i, 1);
-            }
-        }
-    }
-}
-
-chrome.commands.onCommand.addListener(ControlHandler);
-chrome.runtime.onConnect.addListener(function(port){
-                                        console.assert(port.name.indexOf("control") !== -1, "Out of control!!!");
-                                        if (port.name == "ytcontrol") ytports.push(port);
-                                        else if (port.name == "sccontrol") scports.push(port);
-                                    }
 );

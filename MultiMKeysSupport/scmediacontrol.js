@@ -1,20 +1,21 @@
-var next = null;
-var prev = null;
-var pause = null;
+var next = null,
+    prev = null,
+    pause = null;
 
-var localPlay = ['Play current'];
-var localPause = ['Pause current'];
+var localPlaying = ['Pause current'];
 
-function contains(list, string){
-    if (list.indexOf(string) != -1) return true;
-    else{ return false; }
+function isPlaying(){
+    return localPlaying.indexOf(pause.getAttribute('title')) !== -1;
+    /* 
+    * When paused/stopped, SC's play/pause button has attribute {title="Play current"}
+    * When playing, SC's play/pause button has attribute {title="Pause current"} 
+    * That's the only way I found to check if music is playing.
+    */
 }
 
 function Next(){
-    try {
-        next.click();
-    }
-    catch(err) {
+    try { next.click(); }
+    catch(err) { // next probably hasn't been defined as a button.
         n = document.getElementsByClassName('skipControl__next');
         if (n.length) {
             next = n[0];
@@ -23,10 +24,8 @@ function Next(){
     }
 }
 function Previous(){
-    try {
-        prev.click();
-    }
-    catch(err){
+    try { prev.click(); }
+    catch(err){ // prev probably hasn't been defined as a button.
         p = document.getElementsByClassName('skipControl__previous');
         if (p.length){
             prev = p[0];
@@ -35,14 +34,8 @@ function Previous(){
     }
 }
 function PausePlay(state){
-    try{
-        if ( (state && contains(localPlay, pause.getAttribute('title'))) || 
-             (state == 0 && contains(localPause, pause.getAttribute('title')))
-           ){
-            pause.click();
-        }
-    }
-    catch (err) {
+    try { if ( (state && !isPlaying()) || (!state && isPlaying()) )   pause.click(); } //If "play" command and it isn't playing: play. And viceversa.
+    catch (err) { // pause probably hasn't been defined as a button.
         if (err instanceof TypeError){
             p = document.getElementsByClassName('playControl');
             if (p.length) {
@@ -54,23 +47,28 @@ function PausePlay(state){
 }
 function CatchMultimedia(msg){
     cmd = msg.command;
-    if (cmd == "next") {
-        Next();
-        console.log('"Next" command received.')
-    }
-    if (cmd == "prev") {
-        Previous();
-        console.log('"Replay/Previous" command received.')
-    }
-    if (cmd == "play") {
-        PausePlay(1);
-        console.log('"Play" command received.')
-    }
-    if (cmd == "pause") {
-        PausePlay(0);
-        console.log('"Pause" command received.')
+    switch(cmd){
+        case "next":
+            Next();
+            console.log('"Next" command received.')
+            break;
+
+        case "prev":
+            Previous();
+            console.log('"Previous" command received.')
+            break;
+
+        case "play":
+            PausePlay(1);
+            console.log('"Play" command received.')
+            break;
+
+        case "pause":
+            PausePlay(0);
+            console.log('"Pause" command received.')
+            break;
     }
 }
 
 var port = chrome.runtime.connect({name: "sccontrol"});
-port.onMessage.addListener(CatchMultimedia);
+port.onMessage.addListener( CatchMultimedia );
