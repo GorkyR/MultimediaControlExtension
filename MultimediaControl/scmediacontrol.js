@@ -13,37 +13,36 @@ function isPlaying(){
     */
 }
 
+function defineControls(){
+    n = document.getElementsByClassName('skipControl__next');
+    p = document.getElementsByClassName('skipControl__previous');
+    p = document.getElementsByClassName('playControl');
+
+    if (n.length) next = n[0];
+    if (p.length) prev = p[0];
+    if (p.length) pause = p[0];
+}
+
 function Next(){
     try { next.click(); }
     catch(err) { // next probably hasn't been defined as a button.
-        n = document.getElementsByClassName('skipControl__next');
-        if (n.length) {
-            next = n[0];
-            Next();
-        }
+        defineControls();
+        Next();
     }
 }
 
 function Previous(){
     try { prev.click(); }
     catch(err){ // prev probably hasn't been defined as a button.
-        p = document.getElementsByClassName('skipControl__previous');
-        if (p.length){
-            prev = p[0];
-            Previous();
-        }
+        defineControls();
+        Previous();
     }
 }
 function PausePlay(state){
     try { if ( (state && !isPlaying()) || (!state && isPlaying()) )   pause.click(); } //If "play" command and it isn't playing: play. And viceversa.
     catch (err) { // pause probably hasn't been defined as a button.
-        if (err instanceof TypeError){
-            p = document.getElementsByClassName('playControl');
-            if (p.length) {
-                pause = p[0];
-                PausePlay(state);
-            }
-        }
+        defineControls();
+        PausePlay(state);
     }
 }
 function CatchMultimedia(msg){
