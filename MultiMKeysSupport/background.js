@@ -4,9 +4,11 @@ var ytPorts = [],
 var playing = true;
 
 function ControlHandler(command){ 
-    if (scPorts.length){                            //If there are soudncloud ports open, pause YT and control only SC.  
+    if (scPorts.length){                            //If there are soundcloud ports open, pause YT and control only SC. 
         ExcertControl(command, scPorts);
+        tmp = playing;
         ExcertControl("playpause", ytPorts, true);
+        playing = tmp;
     }
     else ExcertControl(command, ytPorts);
 }
