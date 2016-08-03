@@ -2,49 +2,49 @@ var next = null,
     prev = null,
     pause = null;
 
-var localPlaying = ['Pause'];
+var localPlaying = ['Pause current'];
 
 function isPlaying(){
-    return localPlaying.indexOf(pause.getAttribute('aria-label')) !== -1;
+    return localPlaying.indexOf(pause.getAttribute('title')) !== -1;
     /* 
-    * When paused/stopped, YT's play/pause button has attribute {aria-label="Play"}  or {title="Replay"}
-    * When playing, YT's play/pause button has attribute {aria-label="Pause"} 
-    * That's the only way I found to check if video is playing.
+    * When paused/stopped, SC's play/pause button has attribute {title="Play current"}
+    * When playing, SC's play/pause button has attribute {title="Pause current"} 
+    * That's the only way I found to check if music is playing.
     */
+}
+
+function defineControls(){
+    n = document.getElementsByClassName('skipControl__next');
+    p = document.getElementsByClassName('skipControl__previous');
+    p = document.getElementsByClassName('playControl');
+
+    if (n.length) next = n[0];
+    if (p.length) prev = p[0];
+    if (p.length) pause = p[0];
 }
 
 function Next(){
     try { next.click(); }
     catch(err) { // next probably hasn't been defined as a button.
-        n = document.getElementsByClassName('ytp-next-button');
-        if (n.length) {
-            next = n[n.length-1];
-            Next();
-        }
+        defineControls();
+        Next();
     }
 }
+
 function Previous(){
     try { prev.click(); }
     catch(err){ // prev probably hasn't been defined as a button.
-        p = document.getElementsByClassName('ytp-prev-button');
-        if (p.length){
-            prev = p[p.length-1];
-            Previous();
-        }
+        defineControls();
+        Previous();
     }
 }
-
 function PausePlay(state){
     try { if ( (state && !isPlaying()) || (!state && isPlaying()) )   pause.click(); } //If "play" command and it isn't playing: play. And viceversa.
     catch (err) { // pause probably hasn't been defined as a button.
-        p = document.getElementsByClassName('ytp-play-button');
-        if (p.length) {
-            pause = p[p.length-1];
-            PausePlay(state);
-        }
+        defineControls();
+        PausePlay(state);
     }
 }
-
 function CatchMultimedia(msg){
     cmd = msg.command;
     switch(cmd){
@@ -55,7 +55,7 @@ function CatchMultimedia(msg){
 
         case "prev":
             Previous();
-            console.log('"Replay/Previous" command received.')
+            console.log('"Previous" command received.')
             break;
 
         case "play":
@@ -70,5 +70,5 @@ function CatchMultimedia(msg){
     }
 }
 
-var port = chrome.runtime.connect({name: "ytcontrol"});
+var port = chrome.runtime.connect({name: "sccontrol"});
 port.onMessage.addListener( CatchMultimedia );
