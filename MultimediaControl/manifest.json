@@ -3,11 +3,18 @@
 
 	"name": "MultimediaControl",
 	"description": "Adds Multimedia Keys support for Youtube and Soundcloud",
+	"icons": {"128":"MC.png"},
 	"version": "0.9.9375",
 	"author": "GorkyR",
 
 	"background": {
 		"page": "background.html"
+	},
+
+	"browser_action":{
+		"default_title":"MediaControl Status",
+		"default_icon":"MC.png",
+		"default_popup":"popup.html"
 	},
 
 	"commands":{

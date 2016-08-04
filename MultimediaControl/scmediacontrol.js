@@ -70,5 +70,6 @@ function CatchMultimedia(msg){
     }
 }
 
+defineControls();
 var port = chrome.runtime.connect({name: "sccontrol"});
 port.onMessage.addListener( CatchMultimedia );

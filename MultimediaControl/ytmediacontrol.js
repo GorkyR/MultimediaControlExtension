@@ -2,16 +2,19 @@ var next = null,
     prev = null,
     video = null;
 
+var locked = true; 
+
 var onPlaying = function(){localStorage.setItem('playing', document.title);};
 var onStorage = function(evt){
     key = evt.key;
-    if (key == 'playing' && localStorage.playing !== document.title){
+    if ((locked && key == 'playing') && localStorage.playing !== document.title){
         video.pause();
     }
 };
 
-function imPlaying(){
-    return localStorage.getItem('playing') == document.title;
+function isUnlocked(){
+    if (locked) {return localStorage.getItem('playing') == document.title;}
+    return true;
 }
 
 function defineControls(){
@@ -27,7 +30,7 @@ function defineControls(){
 }
 
 function Next(){
-    try { if (imPlaying()) next.click(); }
+    try { if (isUnlocked()) next.click(); }
     catch(err) { // next probably hasn't been defined as a button.
         defineControls();
         Next();
@@ -35,7 +38,7 @@ function Next(){
 }
 
 function Previous(){
-    try { if (imPlaying()) prev.click(); }
+    try { if (isUnlocked()) prev.click(); }
     catch(err){ // prev probably hasn't been defined as a button.
         defineControls();
         Previous();
@@ -44,7 +47,7 @@ function Previous(){
 
 function PausePlay(state){
     try { 
-        if (state && video.paused && imPlaying())   video.play();  // If "play" command and it isn't playing: play.
+        if (state && video.paused && isUnlocked())   video.play();  // If "play" command and it isn't playing: play.
         else if (!state && !video.paused)           video.pause(); // And viceversa.
     }
     catch (err) { // video probably hasn't been defined as a video element.
@@ -74,6 +77,17 @@ function CatchMultimedia(msg){
         case "pause":
             PausePlay(0);
             console.log('"Pause" command received.')
+            break;
+
+        case "lock":
+            locked = true;
+            if (!isUnlocked()) PausePlay(0);               //On lock, paused if not main
+            console.log('Multiple tab playback locked');
+            break;
+        
+        case "unlock":
+            locked = false;
+            console.log('Multiple tab playback unlocked');
             break;
     }
 }
