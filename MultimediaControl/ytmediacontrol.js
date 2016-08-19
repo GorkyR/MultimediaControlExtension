@@ -8,6 +8,7 @@ var onPlaying = function(){localStorage.setItem('playing', document.title);};
 var onStorage = function(evt){
     key = evt.key;
     if ((locked && key == 'playing') && localStorage.playing !== document.title){
+        defineControls();
         video.pause();
     }
 };
