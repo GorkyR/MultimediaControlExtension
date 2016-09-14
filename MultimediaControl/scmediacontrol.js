@@ -16,11 +16,11 @@ function isPlaying(){
 function defineControls(){
     n = document.getElementsByClassName('skipControl__next');
     p = document.getElementsByClassName('skipControl__previous');
-    p = document.getElementsByClassName('playControl');
+    s = document.getElementsByClassName('playControl');
 
     if (n.length) next = n[0];
     if (p.length) prev = p[0];
-    if (p.length) pause = p[0];
+    if (s.length) pause = s[0];
 }
 
 function Next(){
