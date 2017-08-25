@@ -4,8 +4,8 @@
 	"name": "MultimediaControl",
 	"description": "Adds Multimedia Keys support for Youtube and Soundcloud",
 	"icons": {"128":"MC.png"},
-	"version": "0.9.9375",
-	"author": "GorkyR",
+	"version": "0.1.4",
+	"author": "Gorky Rojas",
 
 	"background": {
 		"page": "background.html"
@@ -39,12 +39,12 @@
 			"description": "Replays/Plays previous"
 		}
 	},
-	
+
 	"content_scripts": [{
 		"matches": ["https://www.youtube.com/*"],
-		"js": ["ytmediacontrol.js"]
+		"js": ["youtubecontrol.js"]
 	},{
 		"matches": ["https://soundcloud.com/*"],
-		"js": ["scmediacontrol.js"]
+		"js": ["soundcloudcontrol.js"]
 	}]
 }

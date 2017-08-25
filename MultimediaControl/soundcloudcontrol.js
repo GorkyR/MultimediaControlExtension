@@ -1,14 +1,12 @@
 var next = null,
     prev = null,
-    pause = null;
-
-var localPlaying = ['Pause current'];
+    play = null;
 
 function isPlaying(){
-    return localPlaying.indexOf(pause.getAttribute('title')) !== -1;
-    /* 
+    return play.getAttribute('title').indexOf("Pause") !== -1;
+    /*
     * When paused/stopped, SC's play/pause button has attribute {title="Play current"}
-    * When playing, SC's play/pause button has attribute {title="Pause current"} 
+    * When playing, SC's play/pause button has attribute {title="Pause current"}
     * That's the only way I found to check if music is playing.
     */
 }
@@ -20,26 +18,33 @@ function defineControls(){
 
     if (n.length) next = n[0];
     if (p.length) prev = p[0];
-    if (s.length) pause = s[0];
+    if (s.length) play = s[0];
 }
 
 function Next(){
-    try { next.click(); }
-    catch(err) { // next probably hasn't been defined as a button.
+    try {
+        next.click();
+    }
+    catch(err) { // next probably hasn't been defined.
         defineControls();
         Next();
     }
 }
 
 function Previous(){
-    try { prev.click(); }
-    catch(err){ // prev probably hasn't been defined as a button.
+    try {
+        prev.click();
+    }
+    catch(err){ // prev probably hasn't been defined.
         defineControls();
         Previous();
     }
 }
 function PausePlay(state){
-    try { if ( (state && !isPlaying()) || (!state && isPlaying()) )   pause.click(); } //If "play" command and it isn't playing: play. And viceversa.
+    try {
+        if ( (state && !isPlaying()) || (!state && isPlaying()) ) //If "play" command and not playing: play. And viceversa.
+            play.click();
+    }
     catch (err) { // pause probably hasn't been defined as a button.
         defineControls();
         PausePlay(state);

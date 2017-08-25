@@ -1,20 +1,28 @@
+function s4() { return Math.floor((1+Math.random()) * 0x10000).toString(16).substring(1); }
+var GUID = s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+
+///////////////////////////////////////////////////////////////////////////////////////
+
 var next = null,
     prev = null,
     video = null;
 
-var locked = true; 
+var locked = true;
 
-var onPlaying = function(){localStorage.setItem('playing', document.title);};
-var onStorage = function(evt){
-    key = evt.key;
-    if ((locked && key == 'playing') && localStorage.playing !== document.title){
-        defineControls();
-        video.pause();
-    }
-};
+var onPlaying = function() {
+        localStorage.setItem('playing', GUID);
+    };
+var onStorage = function(event){
+        key = event.key;
+        if ((locked && key == 'playing') && localStorage.playing !== GUID){
+            defineControls();
+            video.pause();
+        }
+    };
 
 function isUnlocked(){
-    if (locked) {return localStorage.getItem('playing') == document.title;}
+    if (locked)
+        return localStorage.getItem('playing') == GUID;
     return true;
 }
 
@@ -31,29 +39,37 @@ function defineControls(){
 }
 
 function Next(){
-    try { if (isUnlocked()) next.click(); }
-    catch(err) { // next probably hasn't been defined as a button.
+    try {
+        if (isUnlocked())
+            next.click();
+    }
+    catch(err) { // next probably hasn't been defined.
         defineControls();
         Next();
     }
 }
 
 function Previous(){
-    try { if (isUnlocked()) prev.click(); }
-    catch(err){ // prev probably hasn't been defined as a button.
+    try {
+        if (isUnlocked())
+            prev.click();
+    }
+    catch(err){ // prev probably hasn't been defined.
         defineControls();
         Previous();
     }
 }
 
-function PausePlay(state){
-    try { 
-        if (state && video.paused && isUnlocked())   video.play();  // If "play" command and it isn't playing: play.
-        else if (!state && !video.paused)           video.pause(); // And viceversa.
+function PausePlay(newState){
+    try {
+        if (newState && isUnlocked())
+            video.play();  // If "play" command and it isn't playing: play.
+        else if (!newState)
+            video.pause(); // And viceversa.
     }
-    catch (err) { // video probably hasn't been defined as a video element.
+    catch (err) { // video probably hasn't been defined.
         defineControls();
-        PausePlay(state);
+        PausePlay(newState);
     }
 }
 
@@ -82,10 +98,10 @@ function CatchMultimedia(msg){
 
         case "lock":
             locked = true;
-            if (!isUnlocked()) PausePlay(0);               //On lock, paused if not main
+            if (!isUnlocked()) PausePlay(0); //On lock, paused if not main
             console.log('Multiple tab playback locked');
             break;
-        
+
         case "unlock":
             locked = false;
             console.log('Multiple tab playback unlocked');
@@ -94,6 +110,10 @@ function CatchMultimedia(msg){
 }
 
 defineControls();
+var mutObserver = new MutationObserver(function (mutations) { defineControls(); });
+mutObserver.observe(document.body, { characterData: true, subtree: true });
+
 window.addEventListener('storage', onStorage);
+
 var port = chrome.runtime.connect({name: "ytcontrol"});
 port.onMessage.addListener( CatchMultimedia );
