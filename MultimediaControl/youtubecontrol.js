@@ -52,7 +52,15 @@ function Next(){
 function Previous(){
     try {
         if (isUnlocked())
-            prev.click();
+        {
+            if (prev.getAttribute('aria-disabled') == "false")
+                prev.click();
+            else
+            {
+                video.currentTime = 0;
+                video.play();
+            }
+        }
     }
     catch(err){ // prev probably hasn't been defined.
         defineControls();
@@ -73,7 +81,7 @@ function PausePlay(newState){
     }
 }
 
-function CatchMultimedia(msg){
+function CommandHandler(msg){
     cmd = msg.command;
     switch(cmd){
         case "next":
@@ -116,4 +124,4 @@ mutObserver.observe(document.body, { characterData: true, subtree: true });
 window.addEventListener('storage', onStorage);
 
 var port = chrome.runtime.connect({name: "ytcontrol"});
-port.onMessage.addListener( CatchMultimedia );
+port.onMessage.addListener( CommandHandler );
