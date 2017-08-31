@@ -6,12 +6,12 @@ var playing = true,
     locked = true;
 
 function CheckPorts(ports){
-    for (i = ports.length - 1; i >= 0; --i){
+    for (var i = ports.length - 1; i >= 0; --i){
         try {
             ports[i].postMessage({"command": "checking"});
         }
         catch(err) {
-            ports.splice(i, 1); //If port is disconnected (tab closed) remove port from ports[].
+            ports.splice(i, 1);
         }
     }
 }

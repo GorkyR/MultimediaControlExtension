@@ -4,7 +4,7 @@
 	"name": "MultimediaControl",
 	"description": "Adds Multimedia Keys support for Youtube and Soundcloud",
 	"icons": {"128":"MC.png"},
-	"version": "0.1.6",
+	"version": "0.1.7",
 	"author": "Gorky Rojas",
 
 	"background": {
@@ -21,7 +21,7 @@
 		"playpause":{
 			"suggested_key":{
 				"default": "MediaPlayPause",
-				"linux": "Ctrl+Shift+Space"
+				"linux": "Ctrl+Home"
 			},
 			"description": "Pauses/Plays"
 		},
@@ -29,7 +29,7 @@
 		"next":{
 			"suggested_key":{
 				"default": "MediaNextTrack",
-				"linux": "Ctrl+Shift+Period"
+				"linux": "Ctrl+End"
 			},
 			"description": "Plays Next"
 		},
@@ -37,7 +37,7 @@
 		"prev":{
 			"suggested_key":{
 				"default": "MediaPrevTrack",
-				"linux": "Ctrl+Shift+Comma"
+				"linux": "Ctrl+Insert"
 			},
 			"description": "Replays/Plays previous"
 		}
